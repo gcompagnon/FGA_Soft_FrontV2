@@ -1,0 +1,110 @@
+﻿<Window x:Name="window" Icon="/fga.ico"
+        x:Class="FrontV2.Action.SimulationScore.View.SimulationScoreView"
+        xmlns="http://schemas.microsoft.com/netfx/2007/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converters="clr-namespace:FrontV2.Converters"
+        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation" 
+        xmlns:utilities="clr-namespace:FrontV2.Utilities"
+        Title="Simulations" Height="922" Width="1225" WindowState="Maximized">
+
+    <Window.Resources>
+
+        <Style x:Key="style1"
+				   TargetType="telerik:GridViewCell" >
+            <Setter Property="Background"
+						Value="Gray" />
+            <Setter Property="Foreground"
+						Value="{telerik:Windows8Resource ResourceKey=MainBrush}" />
+        </Style>
+
+        <Style x:Key="fixedLabelStyle" TargetType="TextBlock">
+            <Setter Property="Width" Value="100" />
+            <Setter Property="Height" Value="30" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="Margin" Value="4" />
+        </Style>
+
+    </Window.Resources>
+
+    <StackPanel>
+
+        <GroupBox Header="Filtres" Margin="10" VerticalAlignment="Top">
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Vertical">
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,15,5,10"><Run Language="fr-fr" Text="Date"/></TextBlock>
+                    <ComboBox HorizontalAlignment="Left" Margin="5,10" VerticalAlignment="Top" Width="95"
+					    ItemsSource="{Binding Dates}" SelectedItem="{Binding SelectedDate, Mode=TwoWay}" Background="{x:Null}" Height="25"/>
+                    <Button Content="Calculer pour cette date" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Click="CalculateScores_Click" Background="{x:Null}" Margin="20,10,5,10" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+
+                    <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,15,5,10" Height="18">
+                    <Run Language="fr-fr" Text="Univers"/>
+                    </TextBlock>
+                    <ComboBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="95"
+					ItemsSource="{Binding Univers}" SelectedItem="{Binding SelectedUniverse, Mode=TwoWay}" Background="{x:Null}" Margin="5,10" Height="25"/>
+                    <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="77.196" Height="21.96" Margin="10,15,5,10"><Run Language="fr-fr" Text="Secteurs GICS"/></TextBlock>
+                    <ComboBox HorizontalAlignment="Left" VerticalAlignment="Top"
+					ItemsSource="{Binding SuperSectors}"
+					SelectedItem="{Binding SelectedSuperSector}" Background="{x:Null}" MinWidth="100" Margin="5,10,5,0" Height="25"/>
+                    <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="79.863" Height="21.96" Margin="10,15,5,10"><Run Language="fr-fr" Text="Industries FGA"/></TextBlock>
+                    <ComboBox VerticalAlignment="Top" HorizontalAlignment="Left"
+					ItemsSource="{Binding Sectors}"
+					SelectedItem="{Binding SelectedSector}" Background="{x:Null}" Margin="5,10" MinWidth="100" Height="25"/>
+                    <Button Content="Charger" HorizontalAlignment="Left" Width="65" Height="25" VerticalAlignment="Top" Click="LoadScore_Click" Background="{x:Null}" Margin="20,10,5,10" />
+                    <Button Content="Config Coefs" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Click="OpenCoef_Click" Background="{x:Null}" Margin="20,10,5,10" />
+                </StackPanel>
+
+            </StackPanel>
+        </GroupBox>
+
+        <Grid Margin="10">
+
+            <telerik:RadBusyIndicator BusyContent="{Binding BusyContent}" 
+					IsBusy="{Binding IsBusy}"
+					IsIndeterminate="True" Margin="5,0" HorizontalAlignment="Left" MaxWidth="{Binding ActualWidth, ElementName=window}" VerticalAlignment="Top">
+
+                <Grid Margin="0,0,25,0">
+                    <telerik:RadGridView
+                                Name="ScoreGrid"
+								ItemsSource="{Binding ValuesDataSource}"
+								ClipboardCopyMode="All"
+								CanUserDeleteRows="True"
+								CanUserInsertRows="False"
+								IsReadOnly="True"
+								AlternateRowBackground="LightGray"
+								AlternationCount="2"
+								SelectionMode="Extended"
+								ClipboardPasteMode="AllSelectedCells"
+								AutoGenerateColumns="True"
+								AutoGeneratingColumn="RadGridView_AutoGeneratingColumn" 
+								SelectionUnit="FullRow" 
+								FrozenColumnCount="14" 
+								IsSynchronizedWithCurrentItem="True"
+								ShowGroupPanel="False" Margin="5,0,20,0" 
+                                MaxHeight="825">
+
+                        <telerik:RadGridView.Columns>
+                            <utilities:RowNumber Header="#"
+										Width="30"
+										CellStyle="{StaticResource style1}" />
+                        </telerik:RadGridView.Columns>
+
+                        <telerik:RadGridView.SortDescriptors>
+                            <telerik:SortDescriptor Member="Note"
+										SortDirection="Descending" />
+                        </telerik:RadGridView.SortDescriptors>
+
+                    </telerik:RadGridView>
+
+                </Grid>
+
+            </telerik:RadBusyIndicator>
+
+        </Grid>
+
+    </StackPanel>
+
+</Window>

@@ -1,0 +1,516 @@
+﻿<Window x:Name="window" Icon="/fga.ico"
+        x:Class="FrontV2.Action.ScoreReco.View.ScoreRecoView"
+        xmlns="http://schemas.microsoft.com/netfx/2007/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converters="clr-namespace:FrontV2.Converters"
+        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation" 
+        xmlns:utilities="clr-namespace:FrontV2.Utilities"
+        Title="Scores" Height="922" Width="1225" WindowState="Maximized">
+
+    <Window.Resources>
+
+        <Style x:Key="style1"
+				   TargetType="telerik:GridViewCell" >
+            <Setter Property="Background"
+						Value="Gray" />
+            <Setter Property="Foreground"
+						Value="{telerik:Windows8Resource ResourceKey=MainBrush}" />
+        </Style>
+
+        <Style x:Key="fixedLabelStyle" TargetType="TextBlock">
+            <Setter Property="Width" Value="100" />
+            <Setter Property="Height" Value="30" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="Margin" Value="4" />
+        </Style>
+
+    </Window.Resources>
+
+    <Grid>
+
+        <telerik:RadMenu Margin="0" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+            <telerik:RadMenu.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFB8B1B1" Offset="0"/>
+                    <GradientStop Color="White" Offset="1"/>
+                </LinearGradientBrush>
+            </telerik:RadMenu.Background>
+            <telerik:RadMenuItem Header="Changements dans scores" Click="RadMenuItem_Click"/>
+            <telerik:RadMenuItem Header="Outils">
+                <telerik:RadMenuItem Header="Exporter vers PDF" Click="ExportToPDF_Button_Click"/>
+                <telerik:RadMenuItem Header="Imprimer Ecran" Click="PrintScreen_Button_Click"/>
+                <telerik:RadMenuItem Header="Coefficients" Click="Coefficient_Button_Click"/>
+            </telerik:RadMenuItem>
+        </telerik:RadMenu>
+
+        <GroupBox Header="Filtres" Margin="10,30.96,10,-20.96" VerticalAlignment="Top">
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal">
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,15,5,10"><Run Language="fr-fr" Text="Date"/></TextBlock>
+                <ComboBox HorizontalAlignment="Left" Margin="5,10" VerticalAlignment="Top" Width="95"
+					ItemsSource="{Binding Dates}" SelectedItem="{Binding SelectedDate, Mode=TwoWay}" Background="{x:Null}" Height="25"/>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,15,5,10" Height="18"><Run Language="fr-fr" Text="Univers"/></TextBlock>
+                <ComboBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="95"
+					ItemsSource="{Binding Univers}" SelectedItem="{Binding SelectedUniverse, Mode=TwoWay}" Background="{x:Null}" Margin="5,10" Height="25"/>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="77.196" Height="21.96" Margin="10,15,5,10"><Run Language="fr-fr" Text="Secteurs GICS"/></TextBlock>
+                <ComboBox HorizontalAlignment="Left" VerticalAlignment="Top"
+					ItemsSource="{Binding SuperSectors}"
+					SelectedItem="{Binding SelectedSuperSector}" Background="{x:Null}" MinWidth="100" Margin="5,10,5,0" Height="25"/>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="79.863" Height="21.96" Margin="10,15,5,10"><Run Language="fr-fr" Text="Industries FGA"/></TextBlock>
+                <ComboBox VerticalAlignment="Top" HorizontalAlignment="Left"
+					ItemsSource="{Binding Sectors}"
+					SelectedItem="{Binding SelectedSector}" Background="{x:Null}" Margin="5,10" MinWidth="100" Height="25"/>
+                <Button Content="Charger" HorizontalAlignment="Left" Width="65" Height="25" VerticalAlignment="Top" Click="LoadScores_Click" Background="{x:Null}" Margin="20,10,5,10" />
+            </StackPanel>
+        </GroupBox>
+
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0,105.88,2.667,1.453">
+
+            <StackPanel>
+
+                <telerik:RadBusyIndicator BusyContent="{Binding BusyContent}" 
+					IsBusy="{Binding IsBusy}"
+					IsIndeterminate="True" Margin="5,0" HorizontalAlignment="Left" MaxWidth="{Binding ActualWidth, ElementName=window}" VerticalAlignment="Top">
+
+                    <telerik:RadExpander Header="Valeurs sous forme de grille" IsExpanded="True" Margin="0,5" MaxWidth="{Binding ActualWidth, ElementName=window}">
+
+                        <Grid Margin="0,0,25,0">
+                            <telerik:RadGridView
+                                Name="ScoreGrid"
+								ItemsSource="{Binding ValuesDataSource}"
+								ClipboardCopyMode="All"
+								CanUserDeleteRows="True"
+								CanUserInsertRows="False"
+								IsReadOnly="True"
+								AlternateRowBackground="LightGray"
+								AlternationCount="2"
+								SelectionMode="Extended"
+								ClipboardPasteMode="AllSelectedCells"
+								AutoGenerateColumns="True"
+								AutoGeneratingColumn="RadGridView_AutoGeneratingColumn" 
+								SelectionUnit="FullRow" 
+								FrozenColumnCount="14" 
+								IsSynchronizedWithCurrentItem="True"
+								ShowGroupPanel="False" Margin="5,0,20,0" 
+                                MaxHeight="825">
+
+                                <telerik:RadGridView.Columns>
+                                    <utilities:RowNumber Header="#"
+										Width="30"
+										CellStyle="{StaticResource style1}" />
+                                </telerik:RadGridView.Columns>
+
+                                <telerik:RadGridView.SortDescriptors>
+                                    <telerik:SortDescriptor Member="Note"
+										SortDirection="Descending" />
+                                </telerik:RadGridView.SortDescriptors>
+
+                                <telerik:RadContextMenu.ContextMenu>
+                                    <telerik:RadContextMenu Opened="RadContextMenu_OpenedGeneral">
+
+                                        <telerik:RadMenuItem Header="Comparer (Valeur 1)"
+									        Click="SelectValue1_Click">
+                                            <telerik:RadMenuItem.IconTemplate>
+                                                <DataTemplate>
+                                                    <Image Source="/FrontV2;component/Images/compare1.png" Stretch="UniformToFill"/>
+                                                </DataTemplate>
+                                            </telerik:RadMenuItem.IconTemplate>
+                                        </telerik:RadMenuItem>
+
+                                        <telerik:RadMenuItem Header="Comparer (Valeur 2)"
+									        Click="SelectValue2_Click">
+                                            <telerik:RadMenuItem.IconTemplate>
+                                                <DataTemplate>
+                                                    <Image Source="/FrontV2;component/Images/compare2.png" Stretch="UniformToFill"/>
+                                                </DataTemplate>
+                                            </telerik:RadMenuItem.IconTemplate>
+                                        </telerik:RadMenuItem>
+
+                                    </telerik:RadContextMenu>
+                                </telerik:RadContextMenu.ContextMenu>
+
+                            </telerik:RadGridView>
+
+                        </Grid>
+
+                    </telerik:RadExpander>
+
+                </telerik:RadBusyIndicator>
+
+                <telerik:RadBusyIndicator BusyContent="{Binding BusyContent2}" 
+					IsBusy="{Binding IsBusy2}"
+					IsIndeterminate="True" Margin="5,0" HorizontalAlignment="Left" VerticalAlignment="Top">
+
+                    <telerik:RadExpander IsExpanded="True" Header="Visualisation des données" Margin="0" MinWidth="100">
+
+
+
+                        <StackPanel Margin="10,0,10,0">
+
+                            <StackPanel VerticalAlignment="Top" Orientation="Horizontal" Margin="0,0,831,0">
+                                <StackPanel Orientation="Vertical">
+                                    <ComboBox Margin="10" ItemsSource="{Binding Companies}" SelectedItem="{Binding SelectedCompany1}" Background="{x:Null}" MinWidth="100" Height="25" />
+                                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                        <Rectangle Width="30"  Height="10" Fill="#00A30E" Margin="5"/>
+                                        <Rectangle Width="30"  Height="10" Fill="#00CD0E" Margin="5"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel  Orientation="Vertical">
+                                    <ComboBox Margin="10" ItemsSource="{Binding Companies}" SelectedItem="{Binding SelectedCompany2}" Background="{x:Null}" MinWidth="100" Height="25" />
+                                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                        <Rectangle Width="30"  Height="10" Fill="#0061F0" Margin="5"/>
+                                        <Rectangle Width="30"  Height="10" Fill="#0093F0" Margin="5"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <ComboBox Margin="10,10,10,40" ItemsSource="{Binding Dates}" SelectedItem="{Binding SelectedSecondDate}" RenderTransformOrigin="0.534,0.2" Background="{x:Null}" MinWidth="80" Height="25" />
+
+                            </StackPanel>
+                            <StackPanel VerticalAlignment="Top" Orientation="Horizontal" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="0">
+
+                                <StackPanel Name="HistoPanel" Orientation="Vertical">
+
+                                    <TextBlock HorizontalAlignment="Center" Text="Histo" FontSize="24" FontWeight="Bold"/>
+                                    <telerik:RadCartesianChart Width="390" Height="390" x:Name="HistoBars">
+
+                                        <telerik:RadContextMenu.ContextMenu>
+                                            <telerik:RadContextMenu >
+                                                <telerik:RadMenuItem Header="Copier dans Paint" Click="HistoBarsCopy" >
+                                                </telerik:RadMenuItem>
+                                            </telerik:RadContextMenu>
+                                        </telerik:RadContextMenu.ContextMenu>
+
+                                        <telerik:RadCartesianChart.HorizontalAxis>
+                                            <telerik:CategoricalAxis/>
+                                        </telerik:RadCartesianChart.HorizontalAxis>
+
+                                        <telerik:RadCartesianChart.VerticalAxis>
+                                            <telerik:LinearAxis Maximum="10" />
+                                        </telerik:RadCartesianChart.VerticalAxis>
+
+                                        <telerik:BarSeries 
+											CategoryBinding="{Binding CategoriesSelector}"
+											ValueBinding="{Binding ValuesSelector}"
+											ItemsSource="{Binding ColumnsSeriesHisto1}" >
+                                            <telerik:BarSeries.PointTemplate>
+                                                <DataTemplate>
+                                                    <Rectangle Fill="#00A30E" />
+                                                </DataTemplate>
+                                            </telerik:BarSeries.PointTemplate>
+                                        </telerik:BarSeries>
+
+
+                                        <telerik:BarSeries 
+											CategoryBinding="{Binding CategoriesSelector}"
+											ValueBinding="{Binding ValuesSelector}"
+											ItemsSource="{Binding ColumnsSeriesHisto3}" >
+                                            <telerik:BarSeries.PointTemplate>
+                                                <DataTemplate>
+                                                    <Rectangle Fill="#00CD0E" />
+                                                </DataTemplate>
+                                            </telerik:BarSeries.PointTemplate>
+                                        </telerik:BarSeries>
+
+                                        <telerik:BarSeries 
+											CategoryBinding="{Binding CategoriesSelector}"
+											ValueBinding="{Binding ValuesSelector}"
+											ItemsSource="{Binding ColumnsSeriesHisto2}" >
+                                            <telerik:BarSeries.PointTemplate>
+                                                <DataTemplate>
+                                                    <Rectangle Fill="#0061F0" />
+                                                </DataTemplate>
+                                            </telerik:BarSeries.PointTemplate>
+                                        </telerik:BarSeries>
+
+                                        <telerik:BarSeries 
+											CategoryBinding="{Binding CategoriesSelector}"
+											ValueBinding="{Binding ValuesSelector}"
+											ItemsSource="{Binding ColumnsSeriesHisto4}" >
+                                            <telerik:BarSeries.PointTemplate>
+                                                <DataTemplate>
+                                                    <Rectangle Fill="#0093F0" />
+                                                </DataTemplate>
+                                            </telerik:BarSeries.PointTemplate>
+                                        </telerik:BarSeries>
+
+                                    </telerik:RadCartesianChart>
+
+                                </StackPanel>
+
+                                <StackPanel Name="GrowthPanel" Orientation="Vertical">
+
+                                    <TextBlock HorizontalAlignment="Center" Text="Growth" FontSize="24" FontWeight="Bold"/>
+
+                                    <telerik:RadPolarChart Name="RadChart1" Width="390" Height="390" >
+                                        <telerik:RadContextMenu.ContextMenu>
+                                            <telerik:RadContextMenu >
+                                                <telerik:RadMenuItem Header="Copier dans Paint" Click="RadChart1Copy" >
+                                                </telerik:RadMenuItem>
+                                            </telerik:RadContextMenu>
+                                        </telerik:RadContextMenu.ContextMenu>
+
+                                        <telerik:RadPolarChart.Grid>
+                                            <telerik:PolarChartGrid GridLineVisibility="Both" Width="500" Height="500" />
+                                        </telerik:RadPolarChart.Grid>
+
+                                        <telerik:RadPolarChart.RadialAxis >
+                                            <telerik:CategoricalRadialAxis 
+												LabelStyle="{StaticResource fixedLabelStyle}" />
+                                        </telerik:RadPolarChart.RadialAxis>
+
+                                        <telerik:RadPolarChart.PolarAxis>
+                                            <telerik:PolarAxis MajorStep="5" Maximum="10" />
+                                        </telerik:RadPolarChart.PolarAxis>
+
+                                        <telerik:RadarLineSeries Stroke="#00CD0E" DashArray="2"
+											CategoryBinding="{Binding CategoriesSelector}"
+											ValueBinding="{Binding ValuesSelector}"
+											ItemsSource="{Binding RadarGrowthSeries3}" />
+
+                                        <telerik:RadarLineSeries Stroke="#00A30E"
+											CategoryBinding="{Binding CategoriesSelector}"
+											ValueBinding="{Binding ValuesSelector}"
+											ItemsSource="{Binding RadarGrowthSeries1}" />
+
+                                        <telerik:RadarLineSeries Stroke="#0093F0" DashArray="2"
+											CategoryBinding="{Binding CategoriesSelector}"
+											ValueBinding="{Binding ValuesSelector}"
+											ItemsSource="{Binding RadarGrowthSeries4}" />
+
+                                        <telerik:RadarLineSeries Stroke="#0061F0" 
+											CategoryBinding="{Binding CategoriesSelector}"
+											ValueBinding="{Binding ValuesSelector}"
+											ItemsSource="{Binding RadarGrowthSeries2}" />
+
+                                    </telerik:RadPolarChart>
+
+                                </StackPanel>
+
+                                <StackPanel Name="ValuePanel" Orientation="Vertical">
+
+                                    <TextBlock HorizontalAlignment="Center" FontSize="24" FontWeight="Bold"><Run Text="Valu"/><Run Language="fr-fr" Text="e"/></TextBlock>
+
+                                    <telerik:RadPolarChart Name="RadChart2" Width="390" Height="390">
+                                        <telerik:RadContextMenu.ContextMenu>
+                                            <telerik:RadContextMenu >
+                                                <telerik:RadMenuItem Header="Copier dans Paint" Click="RadChart2Copy" >
+                                                </telerik:RadMenuItem>
+                                            </telerik:RadContextMenu>
+                                        </telerik:RadContextMenu.ContextMenu>
+
+                                        <telerik:RadPolarChart.Grid>
+                                            <telerik:PolarChartGrid GridLineVisibility="Both" />
+                                        </telerik:RadPolarChart.Grid>
+
+                                        <telerik:RadPolarChart.RadialAxis>
+                                            <telerik:CategoricalRadialAxis 
+												LabelStyle="{StaticResource fixedLabelStyle}" />
+                                        </telerik:RadPolarChart.RadialAxis>
+
+                                        <telerik:RadPolarChart.PolarAxis>
+                                            <telerik:PolarAxis MajorStep="5" Maximum="10" />
+                                        </telerik:RadPolarChart.PolarAxis>
+
+                                        <telerik:RadarLineSeries Stroke="#00CD0E" DashArray="2"
+											CategoryBinding="{Binding CategoriesSelector}"
+											ValueBinding="{Binding ValuesSelector}"
+											ItemsSource="{Binding RadarValuesSeries3}" />
+
+                                        <telerik:RadarLineSeries Stroke="#00A30E" 
+											CategoryBinding="{Binding CategoriesSelector}"
+											ValueBinding="{Binding ValuesSelector}"
+											ItemsSource="{Binding RadarValuesSeries1}" />
+
+                                        <telerik:RadarLineSeries Stroke="#0093F0" DashArray="2"
+											CategoryBinding="{Binding CategoriesSelector}"
+											ValueBinding="{Binding ValuesSelector}"
+											ItemsSource="{Binding RadarValuesSeries4}" />
+
+                                        <telerik:RadarLineSeries Stroke="#0061F0"
+											CategoryBinding="{Binding CategoriesSelector}"
+											ValueBinding="{Binding ValuesSelector}"
+											ItemsSource="{Binding RadarValuesSeries2}" />
+
+                                    </telerik:RadPolarChart>
+
+                                </StackPanel>
+
+                                <StackPanel Name="ProfitPanel" Orientation="Vertical">
+
+                                    <TextBlock HorizontalAlignment="Center" Text="Profit" FontSize="24" FontWeight="Bold"/>
+
+                                    <telerik:RadPolarChart Name="RadChart3" Width="390" Height="390">
+                                        <telerik:RadContextMenu.ContextMenu>
+                                            <telerik:RadContextMenu >
+                                                <telerik:RadMenuItem Header="Copier dans Paint" Click="RadChart3Copy" >
+                                                </telerik:RadMenuItem>
+                                            </telerik:RadContextMenu>
+                                        </telerik:RadContextMenu.ContextMenu>
+
+                                        <telerik:RadPolarChart.Grid>
+                                            <telerik:PolarChartGrid GridLineVisibility="Both"  Width="500" Height="500" />
+                                        </telerik:RadPolarChart.Grid>
+
+                                        <telerik:RadPolarChart.RadialAxis>
+                                            <telerik:CategoricalRadialAxis 
+												LabelStyle="{StaticResource fixedLabelStyle}" />
+                                        </telerik:RadPolarChart.RadialAxis>
+
+                                        <telerik:RadPolarChart.PolarAxis>
+                                            <telerik:PolarAxis MajorStep="5" Maximum="10" />
+                                        </telerik:RadPolarChart.PolarAxis>
+
+                                        <telerik:RadarLineSeries Stroke="#00CD0E" DashArray="2"
+											CategoryBinding="{Binding CategoriesSelector}"
+											ValueBinding="{Binding ValuesSelector}"
+											ItemsSource="{Binding RadarProfitSeries3}" />
+
+                                        <telerik:RadarLineSeries Stroke="#00A30E"
+											CategoryBinding="{Binding CategoriesSelector}"
+											ValueBinding="{Binding ValuesSelector}"
+											ItemsSource="{Binding RadarProfitSeries1}" />
+
+                                        <telerik:RadarLineSeries Stroke="#0093F0" DashArray="2"
+											CategoryBinding="{Binding CategoriesSelector}"
+											ValueBinding="{Binding ValuesSelector}"
+											ItemsSource="{Binding RadarProfitSeries4}" />
+
+                                        <telerik:RadarLineSeries Stroke="#0061F0"
+											CategoryBinding="{Binding CategoriesSelector}"
+											ValueBinding="{Binding ValuesSelector}"
+											ItemsSource="{Binding RadarProfitSeries2}" />
+
+                                    </telerik:RadPolarChart>
+
+                                </StackPanel>
+
+                            </StackPanel>
+
+                        </StackPanel>
+
+                    </telerik:RadExpander>
+
+                </telerik:RadBusyIndicator>
+
+                <telerik:RadBusyIndicator BusyContent="{Binding BusyContent2}" 
+					IsBusy="{Binding IsBusy2}"
+					IsIndeterminate="True" Margin="5,0">
+
+                    <telerik:RadExpander Header="Comparatif" Margin="0" ScrollViewer.HorizontalScrollBarVisibility="Auto" IsExpanded="False" Background="Transparent">
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal">
+                                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
+                                    <StackPanel Orientation="Horizontal" Margin="5">
+                                        <TextBlock HorizontalAlignment="Center" Text="Métriques" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" Width="150"/>
+
+                                        <telerik:RadGridView
+											ItemsSource="{Binding MetriqueChartDataSource}"
+											ClipboardCopyMode="All"
+											CanUserDeleteRows="True"
+											CanUserInsertRows="False"
+											IsReadOnly="True"
+											AlternateRowBackground="LightGray"
+											AlternationCount="2"
+											SelectionMode="Extended"
+											ClipboardPasteMode="AllSelectedCells"
+											AutoGenerateColumns="True"
+											AutoGeneratingColumn="RadGridView_AutoGeneratingColumn" 
+											SelectionUnit="FullRow" 
+											ShowGroupPanel="False" 
+											IsSynchronizedWithCurrentItem="True"/>
+
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="5">
+                                        <TextBlock HorizontalAlignment="Center" Text="Scores" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" Width="150"/>
+
+                                        <telerik:RadGridView
+											ItemsSource="{Binding ScoreChartDataSource}"
+											ClipboardCopyMode="All"
+											CanUserDeleteRows="True"
+											CanUserInsertRows="False"
+											IsReadOnly="True"
+											AlternateRowBackground="LightGray"
+											AlternationCount="2"
+											SelectionMode="Extended"
+											ClipboardPasteMode="AllSelectedCells"
+											AutoGenerateColumns="True"
+											AutoGeneratingColumn="RadGridView_AutoGeneratingColumn" 
+											SelectionUnit="FullRow" 
+											ShowGroupPanel="False"
+											IsSynchronizedWithCurrentItem="True" />
+
+                                    </StackPanel>
+
+                                </StackPanel>
+
+                                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal">
+
+                                    <telerik:RadCartesianChart Name="RadChart4" Width="390" Height="390">
+                                        <telerik:RadContextMenu.ContextMenu>
+                                            <telerik:RadContextMenu >
+                                                <telerik:RadMenuItem Header="Copier dans Paint" Click="RadChart4Copy" >
+                                                </telerik:RadMenuItem>
+                                            </telerik:RadContextMenu>
+                                        </telerik:RadContextMenu.ContextMenu>
+
+                                        <telerik:RadCartesianChart.HorizontalAxis>
+                                            <telerik:CategoricalAxis LabelFitMode="Rotate" LabelRotationAngle="45"/>
+                                        </telerik:RadCartesianChart.HorizontalAxis>
+
+                                        <telerik:RadCartesianChart.VerticalAxis>
+                                            <telerik:LinearAxis Maximum="6" Minimum="0" IsInverse="True" MajorStep="1" />
+                                        </telerik:RadCartesianChart.VerticalAxis>
+
+                                        <telerik:LineSeries
+											CategoryBinding="{Binding CategoriesSelectorQuint}"
+											ValueBinding="{Binding ValuesSelectorQuint}"
+											ItemsSource="{Binding QuintileChart1}" >
+                                            <telerik:LineSeries.Stroke>
+                                                <SolidColorBrush Color="#00A30E"/>
+                                            </telerik:LineSeries.Stroke>
+                                        </telerik:LineSeries>
+
+                                    </telerik:RadCartesianChart>
+                                    <telerik:RadCartesianChart Name="RadChart5" Width="390" Height="390">
+                                        <telerik:RadContextMenu.ContextMenu>
+                                            <telerik:RadContextMenu >
+                                                <telerik:RadMenuItem Header="Copier dans Paint" Click="RadChart5Copy" >
+                                                </telerik:RadMenuItem>
+                                            </telerik:RadContextMenu>
+                                        </telerik:RadContextMenu.ContextMenu>
+
+                                        <telerik:RadCartesianChart.HorizontalAxis>
+                                            <telerik:CategoricalAxis LabelFitMode="Rotate" LabelRotationAngle="45"/>
+                                        </telerik:RadCartesianChart.HorizontalAxis>
+
+                                        <telerik:RadCartesianChart.VerticalAxis>
+                                            <telerik:LinearAxis Maximum="6" Minimum="0" IsInverse="True" MajorStep="1" />
+                                        </telerik:RadCartesianChart.VerticalAxis>
+
+                                        <telerik:LineSeries 
+											CategoryBinding="{Binding CategoriesSelectorQuint}"
+											ValueBinding="{Binding ValuesSelectorQuint}"
+											ItemsSource="{Binding QuintileChart2}" >
+                                            <telerik:LineSeries.Stroke>
+                                                <SolidColorBrush Color="#0061F0"/>
+                                            </telerik:LineSeries.Stroke>
+                                        </telerik:LineSeries>
+
+                                    </telerik:RadCartesianChart>
+
+                                </StackPanel>
+
+                            </StackPanel>
+
+                        </ScrollViewer>
+
+                    </telerik:RadExpander>
+
+                </telerik:RadBusyIndicator>
+
+            </StackPanel>
+
+        </ScrollViewer>
+
+    </Grid>
+
+</Window>

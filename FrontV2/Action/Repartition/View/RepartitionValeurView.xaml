@@ -1,0 +1,87 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Converters="clr-namespace:FrontV2.Converters" xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation" x:Class="FrontV2.Action.Repartition.View.RepartitionValeurView"
+        Title="RepartitionValeurView" Height="600" Width="800" WindowState="Maximized">
+    <Window.Resources>
+
+        <Converters:CountryNameToLegendSettingsConverter x:Key="countryNameToLegendSettingsConverter" />
+
+    </Window.Resources>
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <Grid>
+
+            <Grid.Resources>
+
+                <Converters:CountryNameToLegendSettingsConverter x:Key="countryNameToLegendSettingsConverter" />
+
+            </Grid.Resources>
+
+            <StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="10">
+                    <TextBlock TextWrapping="Wrap" Text="Date" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <ComboBox Width="120" Margin="10,0,0,0" Height="25" ItemsSource="{Binding Dates}" SelectedItem="{Binding SelectedDate}"/>
+                    <CheckBox Content="Afficher Écarts" VerticalAlignment="Center" Margin="10,0,0,0" Checked="Gaps_Checked" Unchecked="Gaps_Checked" IsChecked="{Binding ShowGap}"/>
+                    <TextBlock TextWrapping="Wrap" Text="Valeurs:" HorizontalAlignment="Center" Margin="20,0,0,0" VerticalAlignment="Center"/>
+                    <telerik:RadAutoCompleteBox MinWidth="100" Margin="10,0,0,0" WatermarkContent="Entrez des TICKERS" ItemsSource="{Binding AvailableTickers}" SelectedItems="{Binding SelectedTickers, Mode=TwoWay}" AutoCompleteMode="SuggestAppend" />
+                    <Button Content="Charger" Margin="15,0,0,0" Click="Button_Click"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="10">
+                    <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="21.333" FontWeight="Bold" Margin="0,0,10,0" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" Text="Valeurs">
+                        <TextBlock.LayoutTransform>
+                            <TransformGroup>
+                                <RotateTransform Angle="-90"/>
+                            </TransformGroup>
+                        </TextBlock.LayoutTransform></TextBlock>
+
+
+                    <telerik:RadGridView x:Name="RadGridValues" 
+					ShowGroupPanel="False" 
+					ItemsSource="{Binding ValuesDataSource}"
+					AutoGeneratingColumn="RadGridValues_AutoGeneratingColumn"
+					ClipboardCopyMode="All"
+					CanUserDeleteRows="True"
+					CanUserInsertRows="False"
+					IsReadOnly="True"
+					FrozenColumnCount="2"
+					AlternateRowBackground="LightGray"
+					AlternationCount="2"
+					SelectionMode="Extended"
+					ClipboardPasteMode="AllSelectedCells"
+					SelectionUnit="FullRow"
+					IsSynchronizedWithCurrentItem="True"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="10">
+                    <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="21.333" FontWeight="Bold" Margin="0,0,10,0" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" Text="Positions">
+                        <TextBlock.LayoutTransform>
+                            <TransformGroup>
+                                <RotateTransform Angle="-90"/>
+                            </TransformGroup>
+                        </TextBlock.LayoutTransform></TextBlock>
+
+
+                    <telerik:RadGridView x:Name="RadGridPositions" 
+					ShowGroupPanel="False" 
+					ItemsSource="{Binding PositionsDataSource}"
+					AutoGeneratingColumn="RadGridPositions_AutoGeneratingColumn"
+					ClipboardCopyMode="All"
+					CanUserDeleteRows="True"
+					CanUserInsertRows="False"
+					IsReadOnly="True"
+					FrozenColumnCount="2"
+					AlternateRowBackground="LightGray"
+					AlternationCount="2"
+					SelectionMode="Extended"
+					ClipboardPasteMode="AllSelectedCells"
+					SelectionUnit="FullRow"
+					IsSynchronizedWithCurrentItem="True"/>
+                </StackPanel>
+
+            </StackPanel>
+
+        </Grid>
+
+    </ScrollViewer>
+</Window>

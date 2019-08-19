@@ -1,0 +1,20 @@
+﻿FrontV2
+
+
+winexe
+C#
+.cs
+C:\localGIT\FGA_Soft_FrontV2\FrontV2\obj\Debug\
+FrontV2
+none
+false
+DEBUG;TRACE
+C:\localGIT\FGA_Soft_FrontV2\FrontV2\App.xaml
+16-1455350466
+
+74361806490
+45-635391407
+Accueil.xaml;Action\Consultation\Recommandation\View\RecommandationView.xaml;Action\Consultation\View\BaseActionConsultation.xaml;Action\Doublons\View\DoublonsView.xaml;Action\Reco\View\LargeRecommandation.xaml;Action\Reco\View\NewRecommandationSectorsView.xaml;Action\Reco\View\NewRecommandationValeursView.xaml;Action\Reco\View\RecoView.xaml;Action\Repartition\View\RepartitionValeurView.xaml;Action\Repartition\View\RepartitionView.xaml;Action\ScoreChange\View\ScoreChangeView.xaml;Action\ScoreReco\View\ScoreRecoView.xaml;Action\SimulationScores\View\SimulationScoreView.xaml;Simple Styles.xaml;TauxCredit\BaseInterpolation\View\BaseInterpolation.xaml;TauxCredit\Indicateurs\View\IndicateurView.xaml;
+
+True
+

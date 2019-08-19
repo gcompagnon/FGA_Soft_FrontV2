@@ -1,0 +1,195 @@
+﻿<Window x:Name="window" x:Class="FrontV2.Accueil" Icon="/fga.ico"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+        Title="Accueil" Height="860" Width="1280" WindowState="Maximized">
+
+    <Grid>
+
+        <Grid.Resources>
+            <DataTemplate x:Key="GroupTemplate">
+            </DataTemplate>
+
+            <DataTemplate x:Key="ItemTemplate">
+                <StackPanel>
+                    <TextBlock Text="{Binding TileName}" FontSize="24" Foreground="Black"/>
+                    <TextBlock Text="{Binding Message}" FontSize="24" Foreground="Black"/>
+                </StackPanel>
+            </DataTemplate>
+        </Grid.Resources>
+
+        <Menu Height="27" Name="MainMenu" VerticalAlignment="Top">
+
+            <Menu.Background>
+                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                    <GradientStop Color="White" Offset="1"/>
+                    <GradientStop Color="#FFB6B6B6" Offset="0.013"/>
+                </LinearGradientBrush>
+            </Menu.Background>
+
+            <MenuItem Name="AdminMenu"  Header="_Administrateur" Visibility="Collapsed">
+                <MenuItem Header="_Ajout Utilisateur" Click="AddUser_Click"/>
+                <MenuItem Header="_Modification Utilisateur" Click="ModifUser_Click" />
+                <MenuItem Header="_Script BDD" Click="ScriptBDD_Click" />
+            </MenuItem>
+
+            <MenuItem Name="IntégrationToolStripMenuItem" Header="_Intégration" Visibility="Collapsed">
+                <MenuItem Header="_Importation" Click="Importation_Click" />
+                <MenuItem Header="_Vérification" Click="Verification_Click" />
+            </MenuItem>
+
+            <MenuItem Name="MiddleToolStripMenuItem" Header="_Middle" Visibility="Collapsed">
+                <MenuItem Header="_Transparence" Click="Transparence_Click" />
+                <MenuItem Header="_Réconciliation" Click="Reconciliation_Click" />
+            </MenuItem>
+
+            <MenuItem Name="ActMenu" Header="_Action" Visibility="Collapsed">
+                <MenuItem Name="Score" Header="_Score" Click="ScoreRecoMenu_Click"/>
+                <MenuItem Name="Reco" Header="_Reco" Click="Reco_Click"/>
+                <MenuItem Name="Consultation" Header="_Consultation" Click="ConsultationMenu_Click" />
+                <MenuItem Name="Repartition" Header="_Répartition" Click="Repartition_Click" />
+                <MenuItem Name="RepartitionValeurs" Header="_Répartition Valeurs" Click="RepartitionValues_Click" />
+                <MenuItem Name="SimulationScoreValeurs" Header="Simulation Score" Click="SimulationScore_Click" />
+                <Separator/>
+                <MenuItem Name="Doublons" Header="_Doublons" Click="Doublons_Click" />
+            </MenuItem>
+
+            <MenuItem Name="DivMenu" Header="_Stratégie" Visibility="Collapsed">
+                <MenuItem Header="_Affectation Titre/Grille" Click="Affectation_Click" />
+                <MenuItem Header="_Suivi Titre Manuel" Click="SuiviTitresManuel_Click"/>
+                <MenuItem Header="_Alimentation PTF-FGA" Click="AlimentationPtfFGA_Click"/>
+                <MenuItem Header="_Allocation" Click="Allocation_Click"/>
+            </MenuItem>
+
+            <MenuItem Name="TxMenu" Header="_Taux" Visibility="Collapsed">
+                <MenuItem Header="_Interpolation des taux" Click="OpenBaseInter_Click"/>
+                <MenuItem Header="_Indicateurs financiers" Click="OpenIndicateur_Click"/>
+                <Separator/>
+                <MenuItem Header="_Analyse iBoxx" Click="IBoxxAnalyse_Click"/>
+                <MenuItem Header="_Base émetteurs" Click="BaseEmetteur_Click"/>
+                <MenuItem Header="_Ticker BBG">
+                    <MenuItem Header="_Importation" Click="TickerBBGImportation_Click"/>
+                </MenuItem>
+            </MenuItem>
+
+            <MenuItem Name="ReMenu" Header="_Reporting" Visibility="Collapsed">
+                <MenuItem Header="_Extraction" Click="ExtractionReporting_Click"/>
+            </MenuItem>
+
+            <MenuItem Name="SolvencyToolStripMenuItem" Header="_Solvency" Visibility="Collapsed">
+                <MenuItem Header="_Simulation" Click="SolvencySimulation_Click" />
+            </MenuItem>
+
+            <MenuItem Name="DebugToolStripMenuItem" Header="_Debug" Visibility="Collapsed">
+                <MenuItem Header="_CoefSecteurs" Click="CoefSecteurs_Click"/>
+                <MenuItem Header="_CoefValeur" Click="CoefValeurs_Click" />
+                <MenuItem Header="_ConfigNote" Click="ConfigNote_Click"/>
+                <MenuItem Header="_Importation" Click="ImportationAction_Click"/>
+                <MenuItem Header="_Configure Connection" Click="ConfigureConnection_Click"/>
+                <MenuItem Header="_Clean Recommandations" Click="CleanRecommandations_Click"/>
+            </MenuItem>
+
+        </Menu>
+
+        <StackPanel Name="TileList" Margin="0,27,0,0" Visibility="Collapsed">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel x:Name="Line1" Orientation="Horizontal" Margin="10,50,10,10">
+                    <StackPanel x:Name="Consult" Width="320" Background="#FF6EE840" Margin="10" 
+        				MouseDown="StackPanel_MouseDown"
+        				MouseEnter="StackPanel_MouseEnter" MouseLeave="StackPanel_MouseLeave" Height="160">
+                        <TextBlock TextWrapping="Wrap" FontSize="32" HorizontalAlignment="Center" Margin="0,55,0,0" Foreground="White"><Run Text="Consul"/><Run Language="fr-fr" Text="t"/><Run Text="ation"/></TextBlock>
+                    </StackPanel>
+                    <StackPanel x:Name="Scores" Width="320" Background="#FF6BD9E4" Margin="10" 
+        				MouseDown="StackPanel_MouseDown"
+        				MouseEnter="StackPanel_MouseEnter" MouseLeave="StackPanel_MouseLeave">
+                        <TextBlock TextWrapping="Wrap" Text="Scores" FontSize="32" HorizontalAlignment="Center" Margin="76.078,55,76.078,0" Foreground="White"/>
+                    </StackPanel>
+                    <StackPanel x:Name="RepartitionG" Width="320" Background="#FFEE8842" Margin="10" 
+        				MouseDown="StackPanel_MouseDown"
+        				MouseEnter="StackPanel_MouseEnter" MouseLeave="StackPanel_MouseLeave">
+                        <TextBlock TextWrapping="Wrap" FontSize="32" Margin="0,55,0,0" HorizontalAlignment="Center" Foreground="White" Text="Répartitions"/>
+                    </StackPanel>
+                    <StackPanel x:Name="ChangeScore" Width="320" Background="#FFB046E2" Margin="10" 
+        				MouseDown="StackPanel_MouseDown"
+        				MouseEnter="StackPanel_MouseEnter" MouseLeave="StackPanel_MouseLeave">
+                        <TextBlock TextWrapping="Wrap" Text="Changements Scores" FontSize="32" HorizontalAlignment="Center" Margin="0,55,0,0" Foreground="White"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel x:Name="Line2" Orientation="Horizontal" Margin="10,10,10,0">
+                    <StackPanel Width="320" Height="150" Background="#FF6EE840" Visibility="Hidden" Margin="10"/>
+                    <StackPanel x:Name="Recommandation" Width="320" Background="#FF6BD9E4" Margin="10" 
+        				MouseDown="StackPanel_MouseDown"
+        				MouseEnter="StackPanel_MouseEnter" MouseLeave="StackPanel_MouseLeave" Height="160">
+                        <TextBlock TextWrapping="Wrap" Text="Recommandations" FontSize="32" HorizontalAlignment="Center" Margin="0,55,0,0" Foreground="White"/>
+                    </StackPanel>
+                    <StackPanel x:Name="RepartitionV" Width="320" Background="#FFEE8842" Margin="10" 
+        				MouseDown="StackPanel_MouseDown"
+        				MouseEnter="StackPanel_MouseEnter" MouseLeave="StackPanel_MouseLeave">
+                        <TextBlock TextWrapping="Wrap" Text="Répartitions Valeurs" FontSize="32" Margin="0,55,0,0" HorizontalAlignment="Center" Foreground="White"/>
+                    </StackPanel>
+                    <StackPanel x:Name="DoublonsT" Width="320" Background="#FFB046E2" Margin="10" 
+        				MouseDown="StackPanel_MouseDown"
+        				MouseEnter="StackPanel_MouseEnter" MouseLeave="StackPanel_MouseLeave">
+                        <TextBlock TextWrapping="Wrap" Text="Doublons" FontSize="32" HorizontalAlignment="Center" Margin="0,55,0,0" Foreground="White"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel x:Name="Notifications"  Orientation="Horizontal" HorizontalAlignment="Center" Margin="216,50,216,0">
+                    <StackPanel x:Name="NotifScores" Background="#FFE21919" Margin="10" Width="320"
+        				MouseDown="StackPanel_MouseDown"
+        				MouseEnter="StackPanel_MouseEnter" MouseLeave="StackPanel_MouseLeave">
+                        <TextBlock TextWrapping="Wrap" Text="Notification Score" FontSize="32" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Top" Foreground="White"/>
+                        <TextBlock x:Name="NotifScoresText" TextWrapping="Wrap" FontSize="18.667" Margin="72,0,10,0" Foreground="White" Height="105.437"><Run Text=""/><LineBreak/><Run/></TextBlock>
+                    </StackPanel>
+                    <StackPanel x:Name="NotifDoublons" Background="#FFE21919" Margin="10" Height="160" Width="320" Visibility="Collapsed"
+        				MouseDown="StackPanel_MouseDown"
+        				MouseEnter="StackPanel_MouseEnter" MouseLeave="StackPanel_MouseLeave">
+                        <TextBlock TextWrapping="Wrap" Text="Notification Doublons" FontSize="32" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Top" Foreground="White"/>
+                        <TextBlock x:Name="NotifDoublonsText" TextWrapping="Wrap" FontSize="18.667" Margin="72,0,10,0" VerticalAlignment="Top" Height="105.437" Foreground="White"><Run Text=""/><LineBreak/><Run/></TextBlock>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+
+        </StackPanel>
+
+        <StackPanel Name="TauxGrid" Background="#FF212020" Margin="0,27,0,0" Width="1272" Visibility="Collapsed">
+
+            <TextBlock Text=" Fédéris Gestion d'Actifs" Foreground="#FFDE7900" FontSize="32" 
+                       HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,250,0,0" />
+
+            <TextBlock Text="Taux / Crédit" Foreground="#FFDE7900" FontSize="32"
+                       HorizontalAlignment="Center" VerticalAlignment="Center" Margin="466.891,0" />
+
+            <Button Click="OpenBaseInter_Click"  Content="Etat : Interpolation des taux" 
+                    HorizontalAlignment="Center" Margin="0,20,0,0"
+                    VerticalAlignment="Center" Width="414" Height="46" FontFamily="Arial Black" FontSize="16" BorderThickness="1">
+                <Button.Background>
+                    <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                        <GradientStop Color="#FFE48321" Offset="0.402"/>
+                        <GradientStop Color="#FFEBEBEB" Offset="0.039"/>
+                        <GradientStop Color="#FFDDDDDD" Offset="0.969"/>
+                        <GradientStop Color="#FFCDCDCD" Offset="1"/>
+                    </LinearGradientBrush>
+                </Button.Background>
+
+            </Button>
+
+            <Button Click="OpenIndicateur_Click" Content="Crédit : Indicateurs" 
+                    HorizontalAlignment="Center" Margin="0,20,0,0" 
+                    VerticalAlignment="Center" Width="414" Height="45" FontFamily="Arial Black" FontSize="16">
+                <Button.Background>
+                    <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                        <GradientStop Color="#FFF3F3F3" Offset="1"/>
+                        <GradientStop Color="#FFEBEBEB" Offset="1"/>
+                        <GradientStop Color="#FFED7F10"/>
+                        <GradientStop Color="#FFCDCDCD" Offset="1"/>
+                    </LinearGradientBrush>
+                </Button.Background>
+            </Button>
+
+        </StackPanel>
+
+    </Grid>
+
+</Window>

@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrontV2", "FrontV2\FrontV2.csproj", "{123F5C2C-5FB0-4B04-9FC8-E04FF41C52C2}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Front", "..\FGA_Soft_Front\Front\Front.vbproj", "{24168AE0-6B8E-4427-88A0-F903077C3922}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{123F5C2C-5FB0-4B04-9FC8-E04FF41C52C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{123F5C2C-5FB0-4B04-9FC8-E04FF41C52C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{123F5C2C-5FB0-4B04-9FC8-E04FF41C52C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{123F5C2C-5FB0-4B04-9FC8-E04FF41C52C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24168AE0-6B8E-4427-88A0-F903077C3922}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24168AE0-6B8E-4427-88A0-F903077C3922}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24168AE0-6B8E-4427-88A0-F903077C3922}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24168AE0-6B8E-4427-88A0-F903077C3922}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

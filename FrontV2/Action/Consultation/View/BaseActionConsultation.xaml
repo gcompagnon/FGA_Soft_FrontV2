@@ -1,0 +1,895 @@
+﻿<Window x:Name="window" x:Class="FrontV2.Action.Consultation.View.BaseActionConsultation" 
+        Icon="/fga.ico"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+        xmlns:converts="clr-namespace:FrontV2.Converters"
+        xmlns:my="clr-namespace:FrontV2.StyleSelectors"
+        xmlns:utilities="clr-namespace:FrontV2.Utilities"
+        Title="Consultation" Height="700" Width="1100" WindowState="Maximized">
+
+    <Window.Resources>
+
+        <Style x:Key="style1"
+				   TargetType="telerik:GridViewCell" >
+            <Setter Property="Background"
+						Value="Gray" />
+            <Setter Property="Foreground"
+						Value="{telerik:Windows8Resource ResourceKey=MainBrush}" />
+        </Style>
+        
+        <Style x:Key="GridViewGroupPanelStyleExpandCollapse" TargetType="{x:Type telerik:GridViewGroupPanel}">
+        	<Setter Property="Template">
+        		<Setter.Value>
+        			<ControlTemplate TargetType="{x:Type telerik:GridViewGroupPanel}">
+        				<Grid UseLayoutRounding="True">
+        					<VisualStateManager.VisualStateGroups>
+        						<VisualStateGroup x:Name="Grouping">
+        							<VisualState x:Name="NoGroups"/>
+        							<VisualState x:Name="HasGroups">
+        								<Storyboard>
+        									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="panelText">
+        										<DiscreteObjectKeyFrame KeyTime="0">
+        											<DiscreteObjectKeyFrame.Value>
+        												<Visibility>Collapsed</Visibility>
+        											</DiscreteObjectKeyFrame.Value>
+        										</DiscreteObjectKeyFrame>
+        									</ObjectAnimationUsingKeyFrames>
+        									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="panelTextGrouped">
+        										<DiscreteObjectKeyFrame KeyTime="0">
+        											<DiscreteObjectKeyFrame.Value>
+        												<Visibility>Visible</Visibility>
+        											</DiscreteObjectKeyFrame.Value>
+        										</DiscreteObjectKeyFrame>
+        									</ObjectAnimationUsingKeyFrames>
+        								</Storyboard>
+        							</VisualState>
+        						</VisualStateGroup>
+        					</VisualStateManager.VisualStateGroups>
+        					<Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+        						<Border BorderBrush="#FFEFF6FF" BorderThickness="1" Background="{TemplateBinding Background}"/>
+        					</Border>
+        					<StackPanel Margin="0,0,8,0" Orientation="Horizontal">
+                                <Image Margin="2" Source="expand.png" MouseDown="ExpandAll_Click"/>
+                                <Image Margin="2" Source="collapse.png" MouseDown="CollapseAll_Click"/>
+        						<TextBlock x:Name="panelText" FontSize="9.5" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" IsHitTestVisible="False" Margin="{TemplateBinding Padding}" telerik:LocalizationManager.ResourceKey="GridViewGroupPanelText" Text="Faire glisser l'en-tête de la colonne et le déposer près de la colonne pour les regrouper" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"><Run Text="Faire glisser l'en-tête de la colonne et le déposer près de la colonne pour les regrouper"/></TextBlock>
+        						<TextBlock x:Name="panelTextGrouped" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" IsHitTestVisible="False" Margin="{TemplateBinding Padding}" telerik:LocalizationManager.ResourceKey="GridViewGroupPanelTopTextGrouped" Text="Regroupé par" Visibility="Collapsed" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"><Run Text="Regroupé par"/></TextBlock>
+        						<ItemsPresenter VerticalAlignment="Center"/>
+        					</StackPanel>
+        				</Grid>
+        			</ControlTemplate>
+        		</Setter.Value>
+        	</Setter>
+        	<Setter Property="ItemsPanel">
+        		<Setter.Value>
+        			<ItemsPanelTemplate>
+        				<StackPanel IsItemsHost="True" Orientation="Horizontal" VerticalAlignment="Stretch"/>
+        			</ItemsPanelTemplate>
+        		</Setter.Value>
+        	</Setter>
+        	<Setter Property="MinHeight" Value="32"/>
+        	<Setter Property="Margin" Value="0"/>
+        	<Setter Property="Padding" Value="10,0,3,0"/>
+        	<Setter Property="Background">
+        		<Setter.Value>
+        			<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+        				<GradientStop Color="#FFDFDFDF" Offset="1"/>
+        				<GradientStop Color="#FFBABABA"/>
+        			</LinearGradientBrush>
+        		</Setter.Value>
+        	</Setter>
+        	<Setter Property="BorderBrush" Value="#FF848484"/>
+        	<Setter Property="BorderThickness" Value="1"/>
+        	<Setter Property="VerticalContentAlignment" Value="Center"/>
+        	<Setter Property="HorizontalContentAlignment" Value="Left"/>
+        	<Setter Property="SnapsToDevicePixels" Value="True"/>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid Margin="0">
+
+        <telerik:RadMenu HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0">
+
+            <telerik:RadMenu.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFD89535" Offset="0"/>
+                    <GradientStop Color="White" Offset="0.697"/>
+                </LinearGradientBrush>
+            </telerik:RadMenu.Background>
+
+        </telerik:RadMenu>
+
+        <StackPanel VerticalAlignment="Top" Orientation="Horizontal" Margin="10,35.96,-990,0">
+
+            <Label Content="Date" FontSize="12" 
+				VerticalAlignment="Center" Margin="20,5,0,5" />
+            <ComboBox Height="24" x:Name="CBDate" 
+				Text="Date" ItemsSource="{Binding Dates}"
+				SelectedIndex="0" Margin="2,0,0,0" 
+				MinWidth="80" SelectedValue="{Binding SelectedDate, Mode=TwoWay}"/>
+
+            <Label Margin="20,0,0,0" VerticalAlignment="Center" 
+				Content="Univers" Foreground="Black"
+				Background="Peru" FontFamily="Segoe UI" 
+				FontSize="12" Focusable="True" Height="Auto" MinWidth="80" />
+            <ComboBox Height="24" x:Name="CBUniverse" 
+				Text="Univers" ItemsSource="{Binding Univers}"
+				SelectedIndex="0" Margin="2,0,0,0" 
+				MinWidth="120"
+				SelectedValue="{Binding SelectedUniverse, Mode=TwoWay}" />
+
+            <Label Margin="20,0,0,0" VerticalAlignment="Center"
+				Content="Secteurs GICS" Foreground="Black"
+				Background="Tan" FontSize="12" Height="Auto" MinWidth="80" />
+            <ComboBox Height="24" x:Name="CBSuperSecteur"
+				Text="Super Secteur" ItemsSource="{Binding SuperSectors}" DisplayMemberPath="Libelle"
+				Margin="2,0,0,0" MinWidth="120"
+				SelectedValue="{Binding SelectedSuperSector, Mode=TwoWay}" />
+
+            <Label Margin="20,0,0,0" VerticalAlignment="Center" 
+				Content="Industries FGA" Foreground="Black"
+				Background="PaleGoldenrod" FontSize="12" MinWidth="80" />
+            <ComboBox Height="24" x:Name="CBSecteur" 
+				Text="Secteur FGA" ItemsSource="{Binding Sectors}" DisplayMemberPath="Libelle" 
+				Margin="2,0,0,0" MinWidth="120" 
+				SelectedValue="{Binding SelectedSector, Mode=TwoWay}" />
+
+            <Button Content="Charger" Click="LoadData_Click" x:Name="BLoad" Margin="20,0,0,0" VerticalAlignment="Center" Padding="4,3" />
+            
+        </StackPanel>
+
+        <TabControl Margin="10,90,10,10">
+
+            <TabItem x:Name="TabGeneral" Header="Général">
+
+                <telerik:RadBusyIndicator BusyContent="{Binding BusyContent}" IsBusy="{Binding IsBusy}" IsIndeterminate="True">
+                    <telerik:RadGridView
+						x:Name="General"
+						ItemsSource="{Binding GeneralDataSource}"
+						ClipboardCopyMode="All"
+						CanUserDeleteRows="True"
+						CanUserInsertRows="False"
+						IsReadOnly="True"
+						AlternateRowBackground="LightGray"
+						AlternationCount="2"
+						SelectionMode="Extended"
+						ClipboardPasteMode="AllSelectedCells"
+						AutoGenerateColumns="True"
+						AutoGeneratingColumn="RadGridViewType1_AutoGeneratingColumn" 
+						SelectionUnit="FullRow" 
+						FrozenColumnCount="6"
+						IsSynchronizedWithCurrentItem="True" 
+                        GroupPanelStyle="{DynamicResource GridViewGroupPanelStyleExpandCollapse}" >
+                        
+                        <telerik:RadGridView.Columns>
+                            <utilities:RowNumber Header="#"
+								Width="30"
+								CellStyle="{StaticResource style1}" />
+                        </telerik:RadGridView.Columns>
+
+
+                        <telerik:RadGridView.SortDescriptors>
+                            <telerik:SortDescriptor Member="SECTOR"
+								SortDirection="Ascending" />
+                            <telerik:SortDescriptor Member="INDUSTRY"
+								SortDirection="Ascending" />
+                        </telerik:RadGridView.SortDescriptors>
+
+                        <telerik:RadContextMenu.ContextMenu>
+                            <telerik:RadContextMenu Opened="RadContextMenu_OpenedGeneral">
+
+                                <telerik:RadMenuItem Header="Fiches Valeurs" >
+
+                                    <telerik:RadMenuItem Header="Ouvrir fiche excel"
+									Click="OpenExcel_ClickGeneral" >
+                                        <telerik:RadMenuItem.IconTemplate>
+                                            <DataTemplate>
+                                                <Image Source="/FrontV2;component/Images/excel.png" Stretch="UniformToFill"/>
+                                            </DataTemplate>
+                                        </telerik:RadMenuItem.IconTemplate>
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuItem Header="Ouvrir fiche pdf"
+									Click="OpenPDF_ClickGeneral">
+                                        <telerik:RadMenuItem.IconTemplate>
+                                            <DataTemplate>
+                                                <Image Source="/FrontV2;component/Images/pdf.png" Stretch="UniformToFill"/>
+                                            </DataTemplate>
+                                        </telerik:RadMenuItem.IconTemplate>
+                                    </telerik:RadMenuItem>
+
+                                </telerik:RadMenuItem>
+
+                                <telerik:RadMenuItem Header="Liens Bloomberg">
+                                    <telerik:RadMenuItem Header="DES"
+									        Click="DES_ClickGeneral">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="BQ"
+									        Click="BQ_ClickGeneral">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="HCPI"
+									        Click="HCPI_ClickGeneral">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuItem Header="WGT"
+									        Click="WGT_ClickGeneral">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuItem Header="GR"
+									        Click="GR_ClickGeneral">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuSeparatorItem/>
+
+                                    <telerik:RadMenuItem Header="BRC"
+									        Click="BRC_ClickGeneral">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="EVT"
+									        Click="EVT_ClickGeneral">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="ICN"
+									        Click="ICN_ClickGeneral">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="EEG"
+									        Click="EEG_ClickGeneral">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuSeparatorItem/>
+
+                                    <telerik:RadMenuItem Header="EQRV"
+									        Click="EQRV_ClickGeneral">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="PBAR"
+									        Click="PBAR_ClickGeneral">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="ANR"
+									        Click="ANR_ClickGeneral">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuSeparatorItem/>
+
+                                    <telerik:RadMenuItem Header="GIP 5"
+									        Click="GIP5_ClickGeneral">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuItem Header="GIP 30"
+									        Click="GIP30_ClickGeneral">
+                                    </telerik:RadMenuItem>
+
+                                </telerik:RadMenuItem>
+
+                            </telerik:RadContextMenu>
+                        </telerik:RadContextMenu.ContextMenu>
+
+
+                    </telerik:RadGridView>
+                </telerik:RadBusyIndicator>
+
+            </TabItem>
+
+            <TabItem x:Name="TabCroissance" Header="Croissance">
+
+                <telerik:RadBusyIndicator BusyContent="{Binding BusyContent}" IsBusy="{Binding IsBusy}" IsIndeterminate="True">
+                    <telerik:RadGridView
+						x:Name="Croissance"
+						ItemsSource="{Binding CroissanceDataSource}"
+						ClipboardCopyMode="All"
+						CanUserDeleteRows="True"
+						CanUserInsertRows="False"
+						IsReadOnly="True"
+						AlternateRowBackground="LightGray"
+						AlternationCount="2"
+						SelectionMode="Extended"
+						ClipboardPasteMode="AllSelectedCells"
+						AutoGenerateColumns="True"
+						AutoGeneratingColumn="RadGridViewType2_AutoGeneratingColumn" 
+						SelectionUnit="FullRow" 
+						FrozenColumnCount="6" 
+						IsSynchronizedWithCurrentItem="True"
+                        GroupPanelStyle="{DynamicResource GridViewGroupPanelStyleExpandCollapse}">
+
+                        <telerik:RadGridView.Columns>
+                            <utilities:RowNumber Header="#"
+								Width="30"
+								CellStyle="{StaticResource style1}" />
+                        </telerik:RadGridView.Columns>
+
+                        <telerik:RadContextMenu.ContextMenu>
+                            <telerik:RadContextMenu Opened="RadContextMenu_OpenedCroissance">
+
+                                <telerik:RadMenuItem Header="Fiches Valeurs" >
+                                    <telerik:RadMenuItem Header="Ouvrir fiche excel"
+									Click="OpenPDF_ClickCroissance" >
+                                        <telerik:RadMenuItem.IconTemplate>
+                                            <DataTemplate>
+                                                <Image Source="/FrontV2;component/Images/excel.png" Stretch="UniformToFill"/>
+                                            </DataTemplate>
+                                        </telerik:RadMenuItem.IconTemplate>
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuItem Header="Ouvrir fiche pdf"
+									Click="OpenPDF_ClickCroissance">
+                                        <telerik:RadMenuItem.IconTemplate>
+                                            <DataTemplate>
+                                                <Image Source="/FrontV2;component/Images/pdf.png" Stretch="UniformToFill"/>
+                                            </DataTemplate>
+                                        </telerik:RadMenuItem.IconTemplate>
+                                    </telerik:RadMenuItem>
+                                </telerik:RadMenuItem>
+
+                                <telerik:RadMenuItem Header="Liens Bloomberg">
+                                    <telerik:RadMenuItem Header="DES"
+									        Click="DES_ClickCroissance">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="BQ"
+									        Click="BQ_ClickCroissance">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="HCPI"
+									        Click="HCPI_ClickCroissance">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuItem Header="WGT"
+									        Click="WGT_ClickCroissance">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuItem Header="GR"
+									        Click="GR_ClickCroissance">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuSeparatorItem/>
+
+                                    <telerik:RadMenuItem Header="BRC"
+									        Click="BRC_ClickCroissance">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="EVT"
+									        Click="EVT_ClickCroissance">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="ICN"
+									        Click="ICN_ClickCroissance">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="EEG"
+									        Click="EEG_ClickCroissance">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuSeparatorItem/>
+
+                                    <telerik:RadMenuItem Header="EQRV"
+									        Click="EQRV_ClickCroissance">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="PBAR"
+									        Click="PBAR_ClickCroissance">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="ANR"
+									        Click="ANR_ClickCroissance">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuSeparatorItem/>
+
+                                    <telerik:RadMenuItem Header="GIP 5"
+									        Click="GIP5_ClickCroissance">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuItem Header="GIP 30"
+									        Click="GIP30_ClickCroissance">
+                                    </telerik:RadMenuItem>
+
+                                </telerik:RadMenuItem>
+
+                            </telerik:RadContextMenu>
+                        </telerik:RadContextMenu.ContextMenu>
+
+                        <telerik:RadGridView.SortDescriptors>
+                            <telerik:SortDescriptor Member="SECTOR"
+								SortDirection="Ascending" />
+                            <telerik:SortDescriptor Member="INDUSTRY"
+								SortDirection="Ascending" />
+                        </telerik:RadGridView.SortDescriptors>
+
+                    </telerik:RadGridView>
+                </telerik:RadBusyIndicator>
+
+            </TabItem>
+
+            <TabItem x:Name="TabQuality" Header="Qualité">
+
+                <telerik:RadBusyIndicator BusyContent="{Binding BusyContent}" IsBusy="{Binding IsBusy}" IsIndeterminate="True">
+                    <telerik:RadGridView
+						x:Name="Quality"
+						ItemsSource="{Binding QualityDataSource}"
+						ClipboardCopyMode="All"
+						CanUserDeleteRows="True"
+						CanUserInsertRows="False"
+						IsReadOnly="True"
+						AlternateRowBackground="LightGray"
+						AlternationCount="2"
+						SelectionMode="Extended"
+						ClipboardPasteMode="AllSelectedCells"
+						AutoGenerateColumns="True"
+						AutoGeneratingColumn="RadGridViewType2_AutoGeneratingColumn" 
+						SelectionUnit="FullRow" 
+						FrozenColumnCount="6" 
+						IsSynchronizedWithCurrentItem="True"
+                        GroupPanelStyle="{DynamicResource GridViewGroupPanelStyleExpandCollapse}">
+
+                        <telerik:RadGridView.Columns>
+                            <utilities:RowNumber Header="#"
+								Width="30"
+								CellStyle="{StaticResource style1}" />
+                        </telerik:RadGridView.Columns>
+
+                        <telerik:RadContextMenu.ContextMenu>
+                            <telerik:RadContextMenu Opened="RadContextMenu_OpenedQuality">
+
+                                <telerik:RadMenuItem Header="Fiches Valeurs" >
+                                    <telerik:RadMenuItem Header="Ouvrir fiche excel"
+									Click="OpenExcel_ClickQuality" >
+                                        <telerik:RadMenuItem.IconTemplate>
+                                            <DataTemplate>
+                                                <Image Source="/FrontV2;component/Images/excel.png" Stretch="UniformToFill"/>
+                                            </DataTemplate>
+                                        </telerik:RadMenuItem.IconTemplate>
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuItem Header="Ouvrir fiche pdf"
+									Click="OpenPDF_ClickQuality">
+                                        <telerik:RadMenuItem.IconTemplate>
+                                            <DataTemplate>
+                                                <Image Source="/FrontV2;component/Images/pdf.png" Stretch="UniformToFill"/>
+                                            </DataTemplate>
+                                        </telerik:RadMenuItem.IconTemplate>
+                                    </telerik:RadMenuItem>
+
+                                </telerik:RadMenuItem>
+
+                                <telerik:RadMenuItem Header="Liens Bloomberg">
+                                    <telerik:RadMenuItem Header="DES"
+									        Click="DES_ClickQuality">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="BQ"
+									        Click="BQ_ClickQuality">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="HCPI"
+									        Click="HCPI_ClickQuality">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuItem Header="WGT"
+									        Click="WGT_ClickQuality">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuItem Header="GR"
+									        Click="GR_ClickQuality">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuSeparatorItem/>
+
+                                    <telerik:RadMenuItem Header="BRC"
+									        Click="BRC_ClickQuality">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="EVT"
+									        Click="EVT_ClickQuality">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="ICN"
+									        Click="ICN_ClickQuality">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="EEG"
+									        Click="EEG_ClickQuality">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuSeparatorItem/>
+
+                                    <telerik:RadMenuItem Header="EQRV"
+									        Click="EQRV_ClickQuality">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="PBAR"
+									        Click="PBAR_ClickQuality">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="ANR"
+									        Click="ANR_ClickQuality">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuSeparatorItem/>
+
+                                    <telerik:RadMenuItem Header="GIP 5"
+									        Click="GIP5_ClickQuality">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuItem Header="GIP 30"
+									        Click="GIP30_ClickQuality">
+                                    </telerik:RadMenuItem>
+
+                                </telerik:RadMenuItem>
+
+                            </telerik:RadContextMenu>
+                        </telerik:RadContextMenu.ContextMenu>
+
+                        <telerik:RadGridView.SortDescriptors>
+                            <telerik:SortDescriptor Member="SECTOR"
+								SortDirection="Ascending" />
+                            <telerik:SortDescriptor Member="INDUSTRY"
+								SortDirection="Ascending" />
+                        </telerik:RadGridView.SortDescriptors>
+
+                    </telerik:RadGridView>
+                </telerik:RadBusyIndicator>
+
+            </TabItem>
+
+            <TabItem x:Name="TabValorisation" Header="Valorisation">
+
+                <telerik:RadBusyIndicator BusyContent="{Binding BusyContent}" IsBusy="{Binding IsBusy}" IsIndeterminate="True">
+                    <telerik:RadGridView
+						x:Name="Valorisation"
+						ItemsSource="{Binding ValorisationDataSource}"
+						ClipboardCopyMode="All"
+						CanUserDeleteRows="True"
+						CanUserInsertRows="False"
+						IsReadOnly="True"
+						AlternateRowBackground="LightGray"
+						AlternationCount="2"
+						SelectionMode="Extended"
+						ClipboardPasteMode="AllSelectedCells"
+						AutoGenerateColumns="True"
+						AutoGeneratingColumn="RadGridViewType2_AutoGeneratingColumn" 
+						SelectionUnit="FullRow" 
+						FrozenColumnCount="6" 
+						IsSynchronizedWithCurrentItem="True"
+                        GroupPanelStyle="{DynamicResource GridViewGroupPanelStyleExpandCollapse}">
+
+                        <telerik:RadGridView.Columns>
+                            <utilities:RowNumber Header="#"
+								Width="30"
+								CellStyle="{StaticResource style1}" />
+                        </telerik:RadGridView.Columns>
+
+                        <telerik:RadContextMenu.ContextMenu>
+                            <telerik:RadContextMenu Opened="RadContextMenu_OpenedValorisation">
+
+                                <telerik:RadMenuItem Header="Fiches Valeurs" >
+                                    <telerik:RadMenuItem Header="Ouvrir fiche excel"
+									Click="OpenExcel_ClickValorisation" >
+                                        <telerik:RadMenuItem.IconTemplate>
+                                            <DataTemplate>
+                                                <Image Source="/FrontV2;component/Images/excel.png" Stretch="UniformToFill"/>
+                                            </DataTemplate>
+                                        </telerik:RadMenuItem.IconTemplate>
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuItem Header="Ouvrir fiche pdf"
+									Click="OpenPDF_ClickValorisation">
+                                        <telerik:RadMenuItem.IconTemplate>
+                                            <DataTemplate>
+                                                <Image Source="/FrontV2;component/Images/pdf.png" Stretch="UniformToFill"/>
+                                            </DataTemplate>
+                                        </telerik:RadMenuItem.IconTemplate>
+                                    </telerik:RadMenuItem>
+
+                                </telerik:RadMenuItem>
+
+                                <telerik:RadMenuItem Header="Liens Bloomberg">
+                                    <telerik:RadMenuItem Header="DES"
+									        Click="DES_ClickValorisation">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="BQ"
+									        Click="BQ_ClickValorisation">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="HCPI"
+									        Click="HCPI_ClickValorisation">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuItem Header="WGT"
+									        Click="WGT_ClickValorisation">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuItem Header="GR"
+									        Click="GR_ClickValorisation">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuSeparatorItem/>
+
+                                    <telerik:RadMenuItem Header="BRC"
+									        Click="BRC_ClickValorisation">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="EVT"
+									        Click="EVT_ClickValorisation">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="ICN"
+									        Click="ICN_ClickValorisation">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="EEG"
+									        Click="EEG_ClickValorisation">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuSeparatorItem/>
+
+                                    <telerik:RadMenuItem Header="EQRV"
+									        Click="EQRV_ClickValorisation">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="PBAR"
+									        Click="PBAR_ClickValorisation">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="ANR"
+									        Click="ANR_ClickValorisation">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuSeparatorItem/>
+
+                                    <telerik:RadMenuItem Header="GIP 5"
+									        Click="GIP5_ClickValorisation">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuItem Header="GIP 30"
+									        Click="GIP30_ClickValorisation">
+                                    </telerik:RadMenuItem>
+
+                                </telerik:RadMenuItem>
+
+                            </telerik:RadContextMenu>
+                        </telerik:RadContextMenu.ContextMenu>
+
+                        <telerik:RadGridView.SortDescriptors>
+                            <telerik:SortDescriptor Member="SECTOR"
+								SortDirection="Ascending" />
+                            <telerik:SortDescriptor Member="INDUSTRY"
+								SortDirection="Ascending" />
+                        </telerik:RadGridView.SortDescriptors>
+
+                    </telerik:RadGridView>
+                </telerik:RadBusyIndicator>
+
+            </TabItem>
+
+            <TabItem x:Name="TabMomentum" Header="Momentum">
+
+                <telerik:RadBusyIndicator BusyContent="{Binding BusyContent}" IsBusy="{Binding IsBusy}" IsIndeterminate="True">
+                    <telerik:RadGridView
+						x:Name="Momentum"
+						ItemsSource="{Binding MomentumDataSource}"
+						ClipboardCopyMode="All"
+						CanUserDeleteRows="True"
+						CanUserInsertRows="False"
+						IsReadOnly="True"
+						AlternateRowBackground="LightGray"
+						AlternationCount="2"
+						SelectionMode="Extended"
+						ClipboardPasteMode="AllSelectedCells"
+						AutoGenerateColumns="True"
+						AutoGeneratingColumn="RadGridViewType2_AutoGeneratingColumn" 
+						SelectionUnit="FullRow" 
+						FrozenColumnCount="6" 
+						IsSynchronizedWithCurrentItem="True"
+                        GroupPanelStyle="{DynamicResource GridViewGroupPanelStyleExpandCollapse}">
+
+                        <telerik:RadGridView.Columns>
+                            <utilities:RowNumber Header="#"
+								Width="30"
+								CellStyle="{StaticResource style1}" />
+                        </telerik:RadGridView.Columns>
+
+                        <telerik:RadContextMenu.ContextMenu>
+                            <telerik:RadContextMenu Opened="RadContextMenu_OpenedMomentum">
+
+                                <telerik:RadMenuItem Header="Fiches Valeurs" >
+
+                                    <telerik:RadMenuItem Header="Ouvrir fiche excel"
+									Click="OpenExcel_ClickMomentum" >
+                                        <telerik:RadMenuItem.IconTemplate>
+                                            <DataTemplate>
+                                                <Image Source="/FrontV2;component/Images/excel.png" Stretch="UniformToFill"/>
+                                            </DataTemplate>
+                                        </telerik:RadMenuItem.IconTemplate>
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuItem Header="Ouvrir fiche pdf"
+									Click="OpenPDF_ClickMomentum">
+                                        <telerik:RadMenuItem.IconTemplate>
+                                            <DataTemplate>
+                                                <Image Source="/FrontV2;component/Images/pdf.png" Stretch="UniformToFill"/>
+                                            </DataTemplate>
+                                        </telerik:RadMenuItem.IconTemplate>
+                                    </telerik:RadMenuItem>
+
+                                </telerik:RadMenuItem>
+
+                                <telerik:RadMenuItem Header="Liens Bloomberg">
+                                    <telerik:RadMenuItem Header="DES"
+									        Click="DES_ClickMomentum">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="BQ"
+									        Click="BQ_ClickMomentum">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="HCPI"
+									        Click="HCPI_ClickMomentum">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuItem Header="WGT"
+									        Click="WGT_ClickMomentum">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuItem Header="GR"
+									        Click="GR_ClickMomentum">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuSeparatorItem/>
+
+                                    <telerik:RadMenuItem Header="BRC"
+									        Click="BRC_ClickMomentum">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="EVT"
+									        Click="EVT_ClickMomentum">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="ICN"
+									        Click="ICN_ClickMomentum">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="EEG"
+									        Click="EEG_ClickMomentum">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuSeparatorItem/>
+
+                                    <telerik:RadMenuItem Header="EQRV"
+									        Click="EQRV_ClickMomentum">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="PBAR"
+									        Click="PBAR_ClickMomentum">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="ANR"
+									        Click="ANR_ClickMomentum">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuSeparatorItem/>
+
+                                    <telerik:RadMenuItem Header="GIP 5"
+									        Click="GIP5_ClickMomentum">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuItem Header="GIP 30"
+									        Click="GIP30_ClickMomentum">
+                                    </telerik:RadMenuItem>
+
+                                </telerik:RadMenuItem>
+
+                            </telerik:RadContextMenu>
+                        </telerik:RadContextMenu.ContextMenu>
+
+                        <telerik:RadGridView.SortDescriptors>
+                            <telerik:SortDescriptor Member="SECTOR"
+								SortDirection="Ascending" />
+                            <telerik:SortDescriptor Member="INDUSTRY"
+								SortDirection="Ascending" />
+                        </telerik:RadGridView.SortDescriptors>
+
+                    </telerik:RadGridView>
+                </telerik:RadBusyIndicator>
+
+            </TabItem>
+
+            <TabItem x:Name="TabSynthese" Header="Synthese">
+
+                <telerik:RadBusyIndicator BusyContent="{Binding BusyContent}" IsBusy="{Binding IsBusy}" IsIndeterminate="True">
+                    <telerik:RadGridView
+						x:Name="Synthese"
+						ItemsSource="{Binding SyntheseDataSource}"
+						ClipboardCopyMode="All"
+						CanUserDeleteRows="True"
+						CanUserInsertRows="False"
+						IsReadOnly="True"
+						AlternateRowBackground="LightGray"
+						AlternationCount="2"
+						SelectionMode="Extended"
+						ClipboardPasteMode="AllSelectedCells"
+						AutoGenerateColumns="True"
+						AutoGeneratingColumn="RadGridViewType1_AutoGeneratingColumn" 
+						SelectionUnit="FullRow" 
+						FrozenColumnCount="6" 
+						IsSynchronizedWithCurrentItem="True"
+                        GroupPanelStyle="{DynamicResource GridViewGroupPanelStyleExpandCollapse}">
+
+                        <telerik:RadGridView.Columns>
+                            <utilities:RowNumber Header="#"
+								Width="30"
+								CellStyle="{StaticResource style1}" />
+                        </telerik:RadGridView.Columns>
+
+                        <telerik:RadContextMenu.ContextMenu>
+                            <telerik:RadContextMenu Opened="RadContextMenu_OpenedSynthese">
+
+                                <telerik:RadMenuItem Header="Fiches Valeurs" >
+
+                                    <telerik:RadMenuItem Header="Ouvrir fiche excel"
+									Click="OpenExcel_ClickSynthese" >
+                                        <telerik:RadMenuItem.IconTemplate>
+                                            <DataTemplate>
+                                                <Image Source="/FrontV2;component/Images/excel.png" Stretch="UniformToFill"/>
+                                            </DataTemplate>
+                                        </telerik:RadMenuItem.IconTemplate>
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuItem Header="Ouvrir fiche pdf"
+									Click="OpenPDF_ClickSynthese">
+                                        <telerik:RadMenuItem.IconTemplate>
+                                            <DataTemplate>
+                                                <Image Source="/FrontV2;component/Images/pdf.png" Stretch="UniformToFill"/>
+                                            </DataTemplate>
+                                        </telerik:RadMenuItem.IconTemplate>
+                                    </telerik:RadMenuItem>
+
+                                </telerik:RadMenuItem>
+
+                                <telerik:RadMenuItem Header="Liens Bloomberg">
+                                    <telerik:RadMenuItem Header="DES"
+									        Click="DES_ClickSynthese">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="BQ"
+									        Click="BQ_ClickSynthese">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="HCPI"
+									        Click="HCPI_ClickSynthese">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuItem Header="WGT"
+									        Click="WGT_ClickSynthese">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuItem Header="GR"
+									        Click="GR_ClickSynthese">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuSeparatorItem/>
+
+                                    <telerik:RadMenuItem Header="BRC"
+									        Click="BRC_ClickSynthese">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="EVT"
+									        Click="EVT_ClickSynthese">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="ICN"
+									        Click="ICN_ClickSynthese">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="EEG"
+									        Click="EEG_ClickSynthese">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuSeparatorItem/>
+
+                                    <telerik:RadMenuItem Header="EQRV"
+									        Click="EQRV_ClickSynthese">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="PBAR"
+									        Click="PBAR_ClickSynthese">
+                                    </telerik:RadMenuItem>
+                                    <telerik:RadMenuItem Header="ANR"
+									        Click="ANR_ClickSynthese">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuSeparatorItem/>
+
+                                    <telerik:RadMenuItem Header="GIP 5"
+									        Click="GIP5_ClickSynthese">
+                                    </telerik:RadMenuItem>
+
+                                    <telerik:RadMenuItem Header="GIP 30"
+									        Click="GIP30_ClickSynthese">
+                                    </telerik:RadMenuItem>
+
+                                </telerik:RadMenuItem>
+
+                            </telerik:RadContextMenu>
+                        </telerik:RadContextMenu.ContextMenu>
+
+                        <telerik:RadGridView.SortDescriptors>
+                            <telerik:SortDescriptor Member="SECTOR"
+								SortDirection="Ascending" />
+                            <telerik:SortDescriptor Member="INDUSTRY"
+								SortDirection="Ascending" />
+                        </telerik:RadGridView.SortDescriptors>
+
+                    </telerik:RadGridView>
+                </telerik:RadBusyIndicator>
+
+            </TabItem>
+
+        </TabControl>
+
+    </Grid>
+</Window>

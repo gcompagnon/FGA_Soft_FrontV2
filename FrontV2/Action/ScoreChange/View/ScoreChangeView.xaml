@@ -1,0 +1,277 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Name="window" x:Class="FrontV2.Action.ScoreChange.View.ScoreChangeView"
+        Icon="/fga.ico"
+        Title="Changements de scores" Width="1017" Height="731" WindowState="Maximized">
+    
+    <Window.Resources>
+        <Style x:Key="GridViewGroupPanelStyleExpandCollapse" TargetType="{x:Type telerik:GridViewGroupPanel}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type telerik:GridViewGroupPanel}">
+                        <Grid UseLayoutRounding="True">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="Grouping">
+                                    <VisualState x:Name="NoGroups"/>
+                                    <VisualState x:Name="HasGroups">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="panelText">
+                                                <DiscreteObjectKeyFrame KeyTime="0">
+                                                    <DiscreteObjectKeyFrame.Value>
+                                                        <Visibility>Collapsed</Visibility>
+                                                    </DiscreteObjectKeyFrame.Value>
+                                                </DiscreteObjectKeyFrame>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="panelTextGrouped">
+                                                <DiscreteObjectKeyFrame KeyTime="0">
+                                                    <DiscreteObjectKeyFrame.Value>
+                                                        <Visibility>Visible</Visibility>
+                                                    </DiscreteObjectKeyFrame.Value>
+                                                </DiscreteObjectKeyFrame>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                <Border BorderBrush="#FFEFF6FF" BorderThickness="1" Background="{TemplateBinding Background}"/>
+                            </Border>
+                            <StackPanel Margin="0,0,8,0" Orientation="Horizontal">
+                                <Image Margin="2" Source="expand.png" MouseDown="ExpandAll_Click"/>
+                                <Image Margin="2" Source="collapse.png" MouseDown="CollapseAll_Click"/>
+                                <TextBlock x:Name="panelText" FontSize="9.5" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" IsHitTestVisible="False" Margin="{TemplateBinding Padding}" telerik:LocalizationManager.ResourceKey="GridViewGroupPanelText" Text="Faire glisser l'en-tête de la colonne et le déposer près de la colonne pour les regrouper" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"><Run Text="Faire glisser l'en-tête de la colonne et le déposer près de la colonne pour les regrouper"/></TextBlock>
+                                <TextBlock x:Name="panelTextGrouped" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" IsHitTestVisible="False" Margin="{TemplateBinding Padding}" telerik:LocalizationManager.ResourceKey="GridViewGroupPanelTopTextGrouped" Text="Regroupé par" Visibility="Collapsed" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"><Run Text="Regroupé par"/></TextBlock>
+                                <ItemsPresenter VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <StackPanel IsItemsHost="True" Orientation="Horizontal" VerticalAlignment="Stretch"/>
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="MinHeight" Value="32"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Padding" Value="10,0,3,0"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFDFDFDF" Offset="1"/>
+                        <GradientStop Color="#FFBABABA"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="BorderBrush" Value="#FF848484"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <GroupBox Header="Filtres" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" Width="315" Height="145">
+            <Grid Margin="0">
+                <StackPanel Margin="30,19,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Orientation="Horizontal">
+                    <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" Height="22" Text="Date 1 (Récente)" Width="95"/>
+                    <ComboBox
+						ItemsSource="{Binding Dates}" SelectedItem="{Binding SelectedDate1, Mode=TwoWay}" Margin="5,0" HorizontalAlignment="Center" />
+                </StackPanel>
+                <StackPanel Margin="30,46,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal">
+                    <TextBlock TextWrapping="Wrap" Text="Date 2 (Ancienne)" HorizontalAlignment="Center" Height="22" Width="95"/>
+                    <ComboBox HorizontalAlignment="Center"
+						ItemsSource="{Binding Dates}" SelectedItem="{Binding SelectedDate2, Mode=TwoWay}" Margin="5,0" />
+                </StackPanel>
+                <telerik:RadButton Content=" Charger " Margin="205.41,86.08,0,0" Click="LoadChanges_Click" 
+					HorizontalAlignment="Left" 
+					VerticalAlignment="Top" Height="25.96" Width="58.59" />
+                <CheckBox Name="Filter1" Content="Écarts rangs inférieurs à 1" Margin="319,108.167,-231.15,-6"/>
+                <Button Content="Exporter PDF" Margin="99.712,87.04,114,10" RenderTransformOrigin="-0.154,3.557" Click="ExportToPDF_Click" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="89.288"/>
+            </Grid>
+        </GroupBox>
+        <telerik:RadGridView x:Name="ChangesGrid"
+			ItemsSource="{Binding ChangesDataSource}" 
+			ClipboardCopyMode="All"
+		    CanUserDeleteRows="True"
+		    CanUserInsertRows="False"
+		    IsReadOnly="True"
+		    AlternateRowBackground="LightGray"
+		    AlternationCount="2"
+		    SelectionMode="Extended"
+		    ClipboardPasteMode="AllSelectedCells"
+		    AutoGenerateColumns="True"
+			AutoGeneratingColumn="Changes_AutoGeneratingColumn"
+			SelectionUnit="FullRow"
+			IsSynchronizedWithCurrentItem="True" 
+            Margin="555,10,10,10"
+            EnableColumnVirtualization="False"
+            EnableRowVirtualization="False"
+            GroupPanelStyle="{DynamicResource GridViewGroupPanelStyleExpandCollapse}"  >
+
+            <telerik:RadGridView.SortDescriptors>
+                <telerik:SortDescriptor Member="SECTOR"
+					SortDirection="Ascending" />
+                <telerik:SortDescriptor Member="INDUSTRY"
+					SortDirection="Ascending" />
+            </telerik:RadGridView.SortDescriptors>
+
+            <telerik:RadContextMenu.ContextMenu>
+                <telerik:RadContextMenu Opened="RadContextMenu_Opened">
+                    
+                    <telerik:RadMenuItem  Header="Montrer l'évolution sur le graphique" 
+						Click="Evolution_Click" >
+                        <telerik:RadMenuItem.IconTemplate>
+                            <DataTemplate>
+                                <Image Source="/FrontV2;component/Images/graph.png" Stretch="UniformToFill"/>
+                            </DataTemplate>
+                        </telerik:RadMenuItem.IconTemplate>
+                    </telerik:RadMenuItem>
+
+                    <telerik:RadMenuItem Header="Fiches Valeurs" >
+
+                        <telerik:RadMenuItem Header="Ouvrir fiche excel"
+                                                     Click="OpenExcel_Click" >
+                            <telerik:RadMenuItem.IconTemplate>
+                                <DataTemplate>
+                                    <Image Source="/FrontV2;component/Images/excel.png" Stretch="UniformToFill"/>
+                                </DataTemplate>
+                            </telerik:RadMenuItem.IconTemplate>
+                        </telerik:RadMenuItem>
+
+                        <telerik:RadMenuItem Header="Ouvrir fiche pdf"
+                                                     Click="OpenPDF_Click" >
+                            <telerik:RadMenuItem.IconTemplate>
+                                <DataTemplate>
+                                    <Image Source="/FrontV2;component/Images/pdf.png" Stretch="UniformToFill"/>
+                                </DataTemplate>
+                            </telerik:RadMenuItem.IconTemplate>
+                        </telerik:RadMenuItem>
+
+                    </telerik:RadMenuItem>
+
+                    <telerik:RadMenuItem Header="Liens Bloomberg">
+                        <telerik:RadMenuItem Header="DES"
+									        Click="DES_Click">
+                        </telerik:RadMenuItem>
+                        <telerik:RadMenuItem Header="BQ"
+									        Click="BQ_Click">
+                        </telerik:RadMenuItem>
+                        <telerik:RadMenuItem Header="HCPI"
+									        Click="HCPI_Click">
+                        </telerik:RadMenuItem>
+
+                        <telerik:RadMenuItem Header="WGT"
+									        Click="WGT_Click">
+                        </telerik:RadMenuItem>
+
+                        <telerik:RadMenuItem Header="GR"
+									        Click="GR_Click">
+                        </telerik:RadMenuItem>
+
+                        <telerik:RadMenuSeparatorItem/>
+
+                        <telerik:RadMenuItem Header="BRC"
+									        Click="BRC_Click">
+                        </telerik:RadMenuItem>
+                        <telerik:RadMenuItem Header="EVT"
+									        Click="EVT_Click">
+                        </telerik:RadMenuItem>
+                        <telerik:RadMenuItem Header="ICN"
+									        Click="ICN_Click">
+                        </telerik:RadMenuItem>
+                        <telerik:RadMenuItem Header="EEG"
+									        Click="EEG_Click">
+                        </telerik:RadMenuItem>
+
+                        <telerik:RadMenuSeparatorItem/>
+
+                        <telerik:RadMenuItem Header="EQRV"
+									        Click="EQRV_Click">
+                        </telerik:RadMenuItem>
+                        <telerik:RadMenuItem Header="PBAR"
+									        Click="PBAR_Click">
+                        </telerik:RadMenuItem>
+                        <telerik:RadMenuItem Header="ANR"
+									        Click="ANR_Click">
+                        </telerik:RadMenuItem>
+
+                        <telerik:RadMenuSeparatorItem/>
+
+                        <telerik:RadMenuItem Header="GIP 5"
+									        Click="GIP5_Click">
+                        </telerik:RadMenuItem>
+
+                        <telerik:RadMenuItem Header="GIP 30"
+									        Click="GIP30_Click">
+                        </telerik:RadMenuItem>
+
+                    </telerik:RadMenuItem>
+
+                </telerik:RadContextMenu>
+            </telerik:RadContextMenu.ContextMenu>
+
+        </telerik:RadGridView>
+
+        <StackPanel Margin="10,160,0,10" Width="540" HorizontalAlignment="Left">
+            <telerik:RadCartesianChart x:Name="quintilesChart" Margin="10,0" Height="300" >
+                <telerik:RadContextMenu.ContextMenu>
+                    <telerik:RadContextMenu >
+                        <telerik:RadMenuItem Header="Copier dans Paint" Click="QuintilesCopy" >
+                        </telerik:RadMenuItem>
+                    </telerik:RadContextMenu>
+                </telerik:RadContextMenu.ContextMenu>
+
+                <telerik:RadCartesianChart.Behaviors>
+                    <telerik:ChartSelectionBehavior DataPointSelectionMode="Single" SelectionChanged="QuintileChart_SelectionChanged"/>
+                    <telerik:ChartPanAndZoomBehavior ZoomMode="Horizontal" PanMode="Horizontal" />
+                </telerik:RadCartesianChart.Behaviors>
+
+                <telerik:RadCartesianChart.HorizontalAxis>
+                    <telerik:CategoricalAxis LabelFitMode="Rotate"  
+                                             LabelRotationAngle="90" LabelInterval="{Binding Interval}"/>
+                </telerik:RadCartesianChart.HorizontalAxis>
+
+                <telerik:RadCartesianChart.VerticalAxis>
+                    <telerik:LinearAxis Maximum="6" Minimum="0" IsInverse="True" MajorStep="1" />
+                </telerik:RadCartesianChart.VerticalAxis>
+
+                <telerik:LineSeries Stroke="Green" 
+					CategoryBinding="{Binding CategoriesSelectorQuint}"
+					ValueBinding="{Binding ValuesSelectorQuint}"
+					ItemsSource="{Binding ChartDataSource}" >
+
+                    <telerik:LineSeries.PointTemplate>
+                        <DataTemplate>
+                            <Ellipse Height="6" Width="6" Fill="DarkGreen" />
+                        </DataTemplate>
+                    </telerik:LineSeries.PointTemplate>
+
+                </telerik:LineSeries>
+            </telerik:RadCartesianChart>
+            <StackPanel Orientation="Horizontal">
+                <GroupBox Header="Informations" Margin="0,10,0,0" Width="315.712" HorizontalAlignment="Left">
+                    <Grid Margin="0">
+                        <TextBlock x:Name="MyLegend" TextWrapping="Wrap" Margin="0,4.5,7.667,0" VerticalAlignment="Top" Height="45.833"/>
+                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="28.666,55.333,0,0" Width="100.757"><Run Language="fr-fr" Text="Point sélectionné :"/></TextBlock>
+                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Date: " VerticalAlignment="Top" Margin="46.843,78.383,0,0"/>
+                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Margin="31.904,99.343,0,0" Width="45.689"><Run Language="fr-fr" Text="Quintile:"/></TextBlock>
+                        <TextBlock x:Name="Date" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="84,78.383,0,0"/>
+                        <TextBlock x:Name="Valeur" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="84,99.343,0,0"/>
+                    </Grid>
+                </GroupBox>
+            </StackPanel>
+        </StackPanel>
+        <RichTextBox HorizontalAlignment="Left" Height="106.833" Margin="330,20,0,0" VerticalAlignment="Top" Width="210">
+            <FlowDocument>
+                <Paragraph>
+                    <Run Language="fr-fr" Text="Par défaut, sont affichées les valeurs ayant une différence de rangs supérieure à 1. Cochez la case pour afficher les valeurs ayant une différence de rangs supéieure ou égale à 1."/>
+                </Paragraph>
+            </FlowDocument>
+        </RichTextBox>
+        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Chemin exportation PDF: \\mede1\partage\,FGA Front Office\02_Gestion_Actions\00_BASE\02_EVOLUTION SCORES" Margin="10,0,0,0" Width="460" Height="41" VerticalAlignment="Bottom"/>
+    </Grid>
+</Window>
